@@ -38,14 +38,15 @@ func (c *ProfileController) isProfileLoggedIn() bool {
 	return c.getCurrentProfileID() != ""
 }
 
-func (c *ProfileController) loggout() {
+//loggout
+func (c *ProfileController) logout() {
 	c.Session.Destroy()
 }
 
 //localHost:3000/profile/register GET
 func (c *ProfileController) GetRegister() mvc.Result {
 	if c.isProfileLoggedIn() {
-		c.loggout()
+		c.logout()
 	}
 
 	return mvc.View{
@@ -108,7 +109,7 @@ func (c *ProfileController) PostRegister() mvc.Result {
 //GetLogin
 func (c *ProfileController) GetLogin() mvc.Result {
 	if c.isProfileLoggedIn() {
-		c.loggout()
+		c.logout()
 	}
 
 	return mvc.View{
@@ -162,7 +163,7 @@ func (c *ProfileController) GetMe() mvc.Result {
 	profile, err := c.ProfileUsecase.GetByID(c.getCurrentProfileID())
 
 	if err != nil {
-		c.loggout()
+		c.logout()
 		c.GetMe()
 	}
 
@@ -175,7 +176,7 @@ func (c *ProfileController) GetMe() mvc.Result {
 //LocalHost:3000/profile/logout
 func (c *ProfileController) AnyLogout() {
 	if c.isProfileLoggedIn() {
-		c.loggout()
+		c.logout()
 	}
 
 	c.Ctx.Redirect("/profile/login")
