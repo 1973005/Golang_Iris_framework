@@ -12,6 +12,10 @@ import (
 	"socmed/src/modules/profile/controller"
 	"socmed/src/modules/profile/repository"
 	"socmed/src/modules/profile/usecase"
+
+	storyCtrl "socmed/src/modules/story/controller"
+	storyRepo "socmed/src/modules/story/repository"
+	storyUc "socmed/src/modules/story/usecase"
 )
 
 func main() {
@@ -24,16 +28,16 @@ func main() {
 	app.RegisterView(views)
 	app.StaticWeb("/public", "./web/public")
 
-	app.Get("/", func(ctx iris.Context) {
-		ctx.ViewData("Message", "Golang Socmed")
-		ctx.View("index.html")
-	})
-
 	db, err := config.GetMongoDB()
 
 	if err != nil {
 		os.Exit(2)
 	}
+	//story
+	storyRepository := storyRepo.NewStoryRepositoryMongo(db, "stories")
+	storyUsecase := storyUc.NewStoryUsecase(storyRepository)
+
+	//profile
 	profileRepository := repository.NewProfileRepositoryMongo(db, "profile")
 	profileUsecase := usecase.NewProfileUsecase(profileRepository)
 
@@ -42,10 +46,17 @@ func main() {
 		Expires: time.Minute * 10,
 	})
 
+	//profile route
 	profile := mvc.New(app.Party("/profile"))
 	profile.Register(profileUsecase, sessionManager.Start)
 
 	profile.Handle(new(controller.ProfileController))
+
+	//story route
+	story := mvc.New(app)
+	story.Register(storyUsecase)
+
+	story.Handle(new(storyCtrl.StoryController))
 
 	app.Run(iris.Addr(":3000"))
 }

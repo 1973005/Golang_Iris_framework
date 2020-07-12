@@ -11,9 +11,9 @@ type Profile struct {
 	LastName     string    `bson:"last_name"`
 	Email        string    `bson:"email"`
 	Password     string    `bson:"password"`
-	ImageProfile string    `bson:"image_profile`
-	CreatedAt    time.Time `bson:"created_at`
-	UpdatedAt    time.Time `bson:"update_at`
+	ImageProfile string    `bson:"image_profile"`
+	CreatedAt    time.Time `bson:"created_at"`
+	UpdatedAt    time.Time `bson:"update_at"`
 }
 
 //Profiles
