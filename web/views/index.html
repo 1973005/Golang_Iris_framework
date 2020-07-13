@@ -4,5 +4,12 @@
           <h2>{{ .Title }}</h2>
       </div>
     <div class="panel-body">
+      {{range .Stories}}
+      <div class="well well-sm">
+        <h3>{{.Title}}</h3>
+        <p>By {{.Profile.FirstName}} at {{.CreateadAt}}</p>
+        <p>{{.Content}}</p>
+      </div>
+      {{end}}
   </div>
 </div>

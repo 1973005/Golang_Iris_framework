@@ -39,7 +39,7 @@ func main() {
 
 	//profile
 	profileRepository := repository.NewProfileRepositoryMongo(db, "profile")
-	profileUsecase := usecase.NewProfileUsecase(profileRepository)
+	profileUsecase := usecase.NewProfileUsecase(profileRepository, storyRepository)
 
 	sessionManager := sessions.New(sessions.Config{
 		Cookie:  "cookiename",

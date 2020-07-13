@@ -8,7 +8,7 @@ import (
 
 func GetMongoDB() (*mgo.Database, error) {
 	host := os.Getenv("MONGO_HOST")
-	dbname := os.Getenv("MONGO_DB_NAME")
+	dbName := os.Getenv("MONGO_DB_NAME")
 
 	session, err := mgo.Dial(host)
 
@@ -16,7 +16,7 @@ func GetMongoDB() (*mgo.Database, error) {
 		return nil, err
 	}
 
-	db := session.DB(dbname)
+	db := session.DB(dbName)
 
 	return db, nil
 }

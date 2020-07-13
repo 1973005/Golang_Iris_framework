@@ -14,6 +14,8 @@ import (
 
 	"socmed/src/modules/profile/model"
 	"socmed/src/modules/profile/usecase"
+
+	storyModel "socmed/src/modules/story/model"
 )
 
 //ProfileIDKey
@@ -38,9 +40,64 @@ func (c *ProfileController) isProfileLoggedIn() bool {
 	return c.getCurrentProfileID() != ""
 }
 
-//loggout
+//logout
 func (c *ProfileController) logout() {
 	c.Session.Destroy()
+}
+
+//localHost:3000/profile/story GET
+func (c *ProfileController) GetStory() mvc.Result {
+	if !c.isProfileLoggedIn() {
+		return mvc.Response{
+			Path: "profile/login",
+		}
+	}
+
+	return mvc.View{
+		Name: "profile/story.html",
+		Data: iris.Map{"Title": "New Story"},
+	}
+}
+
+//localhost:3000/profile/story Post
+func (c *ProfileController) PostStory() mvc.Result {
+	title := c.Ctx.FormValue("title")
+	content := c.Ctx.FormValue("content")
+
+	if title == "" || content == "" {
+		return mvc.Response{
+			Path: "/profile/story",
+		}
+	}
+
+	id := uuid.NewV4()
+
+	profile, err := c.ProfileUsecase.GetByID(c.getCurrentProfileID())
+
+	if err != nil {
+		c.logout()
+		c.GetMe()
+	}
+
+	var story storyModel.Story
+	story.ID = id.String()
+	story.Profile = profile
+	story.Title = title
+	story.Content = content
+	story.CreatedAt = time.Now()
+	story.UpdatedAt = time.Now()
+
+	_, err = c.ProfileUsecase.CreateaStory(&story)
+
+	if err != nil {
+		return mvc.Response{
+			Path: "/profile/story",
+		}
+	}
+
+	return mvc.Response{
+		Path: "/profile/story",
+	}
 }
 
 //localHost:3000/profile/register GET

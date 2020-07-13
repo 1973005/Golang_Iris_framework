@@ -3,15 +3,31 @@ package usecase
 import (
 	"socmed/src/modules/profile/model"
 	"socmed/src/modules/profile/repository"
+
+	storyModel "socmed/src/modules/story/model"
+	storyRepo "socmed/src/modules/story/repository"
 )
 
 // profileusecase
 type profileUsecaseImpl struct {
 	profileRepository repository.ProfileRepository
+	storyRepository   storyRepo.StoryRepository
 }
 
-func NewProfileUsecase(profileRepository repository.ProfileRepository) *profileUsecaseImpl {
-	return &profileUsecaseImpl{profileRepository}
+//NewProfileUsecase
+func NewProfileUsecase(profileRepository repository.ProfileRepository, storyRepository storyRepo.StoryRepository) *profileUsecaseImpl {
+	return &profileUsecaseImpl{profileRepository: profileRepository, storyRepository: storyRepository}
+}
+
+//CreateStory
+func (profileUsecase *profileUsecaseImpl) CreateaStory(*storyModel.Story) (*storyModel.Story, error) {
+	err := profileUsecase.storyRepository.Save(&storyModel.Story{})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &storyModel.Story{}, nil
 }
 
 //SaveProfile
